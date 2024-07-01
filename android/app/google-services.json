@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "854632199686",
+    "project_id": "aptech-flutter-fire",
+    "storage_bucket": "aptech-flutter-fire.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:854632199686:android:32dbb15b7870b35f19b587",
+        "android_client_info": {
+          "package_name": "com.mr_software.mr_test"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB9p_a9EMfL7KvFSdTxQs75NDop5cYwuJU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:854632199686:android:34db530ac0a0431719b587",
+        "android_client_info": {
+          "package_name": "laptop_harbor.flutter.aptech.com"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB9p_a9EMfL7KvFSdTxQs75NDop5cYwuJU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
