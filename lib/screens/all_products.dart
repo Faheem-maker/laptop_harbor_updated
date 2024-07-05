@@ -9,15 +9,15 @@ import 'package:laptop_harbor/Utils/font_styles.dart';
 import 'package:laptop_harbor/dummy/dummy_data.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class DashboardScreen extends StatefulWidget {
-  const DashboardScreen({Key? key}) : super(key: key);
-  static const String routeName = 'dashboard';
+class AllProductsScreen extends StatefulWidget {
+  const AllProductsScreen({Key? key}) : super(key: key);
+  static final String routeName = 'products';
 
   @override
-  State<DashboardScreen> createState() => _DasboardState();
+  State<AllProductsScreen> createState() => _DasboardState();
 }
 
-class _DasboardState extends State<DashboardScreen> {
+class _DasboardState extends State<AllProductsScreen> {
   @override
   Widget build(BuildContext context) {
     return _buildBody(context);
@@ -28,8 +28,7 @@ class _DasboardState extends State<DashboardScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildCatalogue(),
-          _buildFeatured(context),
+          __buildProducts(context),
         ],
       ),
     );
@@ -73,61 +72,8 @@ class _DasboardState extends State<DashboardScreen> {
     );
   }
 
-  Widget _buildCatalogue() {
-    return GestureDetector(
-      onTap: () {
-        Navigator.pushNamed(context, Catalogue.routeName, arguments: [true,true]);
-      },
-      child: Container(
-        margin: EdgeInsets.only(
-            top: 25.0.h, left: 20.h, right: 20.0.h, bottom: 17.h),
-        child: Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Categories',
-                  style: FontStyles.montserratBold19().copyWith(
-                    color: const Color(0xFF34283E),
-                  ),
-                ),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.pushNamed(context, Catalogue.routeName,
-                        arguments: [true, true]);
-                  },
-                  child: Text(
-                    'See All ',
-                    style: FontStyles.montserratBold12()
-                        .copyWith(color: const Color(0xFF9B9B9B)),
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(
-              width: MediaQuery.of(context).size.width,
-              height: 97.h,
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: DummyData.categories.length,
-                shrinkWrap: true,
-                itemBuilder: (context, index) {
-                  return CategoryWidget(
-                    category: DummyData.categories[index],
-                    height: 88.h,
-                    width: 88.w,
-                  );
-                },
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 
-  Widget _buildFeatured(BuildContext context) {
+  Widget __buildProducts(BuildContext context) {
     var screenHeight = MediaQuery.of(context).size.height;
     return Container(
       margin: EdgeInsets.only(
@@ -144,7 +90,7 @@ class _DasboardState extends State<DashboardScreen> {
           SizedBox(
             child: GridView.builder(
               shrinkWrap: true,
-              itemCount: 4,
+              itemCount: DummyData.products.length,
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
                   mainAxisExtent: 270.0.h,
@@ -163,33 +109,6 @@ class _DasboardState extends State<DashboardScreen> {
               },
             ),
           ),
-          Container(
-            width: double.infinity,
-            height: 70.0.h,
-            decoration: BoxDecoration(
-              color: AppColors.white,
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(20.0.r),
-                topRight: Radius.circular(20.0.r),
-              ),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                SizedBox(),
-                AppButton.button(
-                  text: 'See All',
-                  color: AppColors.secondary,
-                  height: 48.0.h,
-                  width: 215.0.w,
-                  onTap: () {
-                    Navigator.pushNamed(context, "/products");
-                  },
-                ),
-                SizedBox(),
-              ],
-            ),
-          )
         ],
       ),
     );
