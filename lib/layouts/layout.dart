@@ -4,6 +4,7 @@ import 'package:laptop_harbor/Screens/Notifications/notifications.dart';
 import 'package:laptop_harbor/Screens/Onboarding/onboarding.dart';
 import 'package:laptop_harbor/Screens/Settings/settings.dart';
 import 'package:laptop_harbor/Common/Widgets/custom_app_bar.dart';
+import 'package:laptop_harbor/screens/Cart/cart.dart';
 import 'package:laptop_harbor/utils/app_colors.dart';
 import 'package:laptop_harbor/utils/font_styles.dart';
 
@@ -85,6 +86,28 @@ class DashboardLayout extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  ListTile(
+                    onTap: () {
+                      Navigator.pushNamed(context, "/products");
+                    },
+                    leading: const Icon(Icons.home,
+                        color: AppColors.primaryLight),
+                    title: Text(
+                      'Home',
+                      style: FontStyles.montserratRegular18(),
+                    ),
+                  ),
+                  ListTile(
+                    onTap: () {
+                      Navigator.pushNamed(context, "/cart");
+                    },
+                    leading: const Icon(Icons.shopping_cart,
+                        color: AppColors.primaryLight),
+                    title: Text(
+                      'Cart',
+                      style: FontStyles.montserratRegular18(),
+                    ),
+                  ),
                   ListTile(
                     onTap: () {
                       Navigator.pop(context);

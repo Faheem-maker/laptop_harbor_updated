@@ -1,11 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:laptop_harbor/Utils/app_colors.dart';
 import 'package:laptop_harbor/Utils/font_styles.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:laptop_harbor/models/product.dart';
 
+class CartTile extends StatefulWidget {
+  final Product product;
+  const CartTile({super.key, required this.product});
 
-class CartTile extends StatelessWidget {
-  const CartTile({Key? key}) : super(key: key);
+  @override
+  State<CartTile> createState() => _CartTileState(product: product);
+}
+
+class _CartTileState extends State<CartTile> {
+  int quantity = 1;
+
+  Product product;
+  _CartTileState({required this.product}) {
+    if (product.quantity != 0) quantity = product.quantity;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -16,8 +30,8 @@ class CartTile extends StatelessWidget {
           height: 80,
           width: 80,
           decoration: BoxDecoration(
-              image: const DecorationImage(
-                  image: AssetImage('assets/product/pic1.png')),
+              image: DecorationImage(
+                  image: NetworkImage(product.image)),
               borderRadius: BorderRadius.circular(10.0)),
         ),
         Expanded(
@@ -29,12 +43,12 @@ class CartTile extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Astylish Women Open Front Long Sleeve Chunky Knit Cardigan',
+                  product.name,
                   style: FontStyles.montserratRegular14(),
                 ),
                 // SizedBox(height: 20.0),
                 Text(
-                  '\$89.99',
+                  '\$${product.price}',
                   style: FontStyles.montserratBold17(),
                 )
               ],
@@ -43,12 +57,27 @@ class CartTile extends StatelessWidget {
         ),
         Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: const [
-            Icon(Icons.add_circle_outline, color: AppColors.lightGray),
-            Text('1', style: TextStyle(color: AppColors.primaryLight)),
-            Icon(
-              Icons.remove_circle_outline,
-              color: AppColors.lightGray,
+          children: [
+            GestureDetector(child: Icon(Icons.add_circle_outline, color: AppColors.lightGray), onTap: () {
+              setState(() {
+                quantity++;
+                product.quantity = quantity;
+              });
+            },),
+            Text(quantity.toString(), style: TextStyle(color: AppColors.primaryLight)),
+            GestureDetector(
+              child: Icon(
+                Icons.remove_circle_outline,
+                color: AppColors.lightGray,
+              ),
+              onTap: () {
+                if (quantity > 1) {
+                  setState(() {
+                    quantity--;
+                    product.quantity = quantity;
+                  });
+                }
+              },
             ),
           ],
         ),

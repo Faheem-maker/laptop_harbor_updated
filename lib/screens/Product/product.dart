@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get_it/get_it.dart';
 import 'package:laptop_harbor/Common/Widgets/app_button.dart';
 import 'package:laptop_harbor/Common/Widgets/cart_tile.dart';
 import 'package:laptop_harbor/Common/Widgets/item_widget.dart';
@@ -8,16 +9,19 @@ import 'package:laptop_harbor/Common/Widgets/shimmer_effect.dart';
 import 'package:laptop_harbor/Utils/app_colors.dart';
 import 'package:laptop_harbor/Utils/font_styles.dart';
 import 'package:laptop_harbor/dummy/dummy_data.dart';
+import 'package:laptop_harbor/models/product.dart';
+import 'package:laptop_harbor/stores/cart.dart';
+import 'package:persistent_shopping_cart/persistent_shopping_cart.dart';
 
 // ignore: must_be_immutable
 class ProductScreen extends StatelessWidget {
   static const String routeName = 'product';
   ProductScreen({Key? key}) : super(key: key);
-   int index = 0;
+   Product? product = null;
   @override
   Widget build(BuildContext context) {
     if (ModalRoute.of(context)!.settings.arguments != null) {
-      index = ModalRoute.of(context)!.settings.arguments as int;
+      product = ModalRoute.of(context)!.settings.arguments as Product;
     }
     return Scaffold(
       backgroundColor: AppColors.whiteLight,
@@ -43,7 +47,7 @@ class ProductScreen extends StatelessWidget {
             pinned: false,
             flexibleSpace: FlexibleSpaceBar(
               background: CachedNetworkImage(
-                imageUrl: DummyData.products[index].image,
+                imageUrl: product!.image,
                 // color: const Color.fromRGBO(42, 3, 75, 0.35),
                 // colorBlendMode: BlendMode.srcOver,
                 fit: BoxFit.cover,
@@ -108,11 +112,11 @@ class ProductScreen extends StatelessWidget {
           Container(
             margin: EdgeInsets.symmetric(horizontal: 20.0.w),
             child: Text(
-              DummyData.products[index].name,
+              product!.name,
               style: FontStyles.montserratRegular19(),
             ),
           ),
-          _buildPrice(context, '\$${DummyData.products[index].price}'),
+          _buildPrice(context, '\$${product!.price}'),
         ],
       ),
     );
@@ -478,16 +482,19 @@ class ProductScreen extends StatelessWidget {
                   ),
                 ),
                 SizedBox(height: 10.0.h),
-                const CartTile(),
+                CartTile(product: product!),
                 SizedBox(height: 10.0.h),
-                _buildColorSelection(context),
-                SizedBox(height: 10.0.h),
-                _buildSizes(context),
-                SizedBox(height: 10.0.h),
+                // _buildColorSelection(context),
+                // SizedBox(height: 10.0.h),
+                // _buildSizes(context),
+                // SizedBox(height: 10.0.h),
                 _buildBottomSheet(
                     context: context,
-                    onTap: () {
-                      Navigator.pop(context);
+                    onTap: () async {
+                      GetIt.instance<Cart>().products.add(product!);
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                          content: Text("Successfully added to cart"),
+                      ));
                     }),
               ],
             ),

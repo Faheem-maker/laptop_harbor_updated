@@ -82,7 +82,7 @@ class _DasboardState extends State<AllProductsScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Featured',
+            'All Products',
             style: FontStyles.montserratBold19()
                 .copyWith(color: const Color(0xFF34283E)),
           ),
@@ -98,7 +98,7 @@ class _DasboardState extends State<AllProductsScreen> {
               itemBuilder: (_, index) {
                 return GestureDetector(
                     onTap: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => ProductScreen(), settings: RouteSettings(arguments: index)),);
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => ProductScreen(), settings: RouteSettings(arguments: DummyData.products[index])),);
                     },
                     child: Expanded(
                       child: ItemWidget(

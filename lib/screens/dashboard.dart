@@ -152,7 +152,7 @@ class _DasboardState extends State<DashboardScreen> {
               itemBuilder: (_, index) {
                 return GestureDetector(
                     onTap: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => ProductScreen(), settings: RouteSettings(arguments: index)),);
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => ProductScreen(), settings: RouteSettings(arguments: DummyData.products[index])),);
                     },
                     child: Expanded(
                       child: ItemWidget(
