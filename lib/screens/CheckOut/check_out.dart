@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get_it/get_it.dart';
 import 'package:laptop_harbor/Common/Widgets/app_button.dart';
 import 'package:laptop_harbor/Common/Widgets/custom_app_bar.dart';
 import 'package:laptop_harbor/Utils/app_colors.dart';
 import 'package:laptop_harbor/Utils/font_styles.dart';
+import 'package:laptop_harbor/stores/cart.dart';
 
-class CheckOut extends StatelessWidget {
+class CheckOutScreen extends StatelessWidget {
   static const String routeName = 'checkout';
-  const CheckOut({Key? key}) : super(key: key);
+  const CheckOutScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -43,11 +45,11 @@ class CheckOut extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.max,
           children: [
-            _buildAddress(context),
+            // _buildAddress(context),
+            // SizedBox(height: 5.0.h),
+            // _buildDeliveryMethod(context),
             SizedBox(height: 5.0.h),
-            _buildDeliveryMethod(context),
-            SizedBox(height: 5.0.h),
-            _buildPaymentMethod(context),
+            // _buildPaymentMethod(context),
           ],
         ),
       ),
@@ -243,6 +245,7 @@ class CheckOut extends StatelessWidget {
 
   Widget _buildBottomSheet(BuildContext context) {
     var size = MediaQuery.of(context).size;
+    var products = GetIt.instance<Cart>().products;
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
@@ -261,7 +264,7 @@ class CheckOut extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text('Items', style: FontStyles.montserratSemiBold14()),
-                Text('\$239.98', style: FontStyles.montserratSemiBold14()),
+                Text('\$${products.fold(0, (previous, current) => previous + current.price * current.quantity)}', style: FontStyles.montserratSemiBold14()),
               ],
             ),
           ),
@@ -281,7 +284,7 @@ class CheckOut extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text('Total price', style: FontStyles.montserratBold19()),
-                Text('\$239.98', style: FontStyles.montserratBold19()),
+                Text('\$${products.fold(0, (previous, current) => previous + current.price * current.quantity) + 18}', style: FontStyles.montserratBold19()),
               ],
             ),
           ),
@@ -293,6 +296,7 @@ class CheckOut extends StatelessWidget {
               height: 48,
               width: size.width - 20.w,
               onTap: () {
+                GetIt.instance<Cart>().clear();
                 showDialog(
                     context: context,
                     builder: (context) {

@@ -1,5 +1,6 @@
 import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
+import 'package:laptop_harbor/services/reviews.dart';
 import 'package:laptop_harbor/stores/cart.dart';
 import 'store.config.dart';
 
@@ -9,4 +10,5 @@ GetIt getIt = GetIt.instance;
 void setup() {
   $initGetIt(getIt);
   getIt.registerSingleton<Cart>(Cart());
+  getIt.registerSingleton<ReviewService>(ReviewService());
 }

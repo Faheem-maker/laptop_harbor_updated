@@ -96,7 +96,7 @@ class CartScreen extends StatelessWidget {
               height: 48.h,
               width: size.width - 20.w,
               onTap: () {
-                Navigator.pushNamed(context, CheckOut.routeName);
+                Navigator.pushNamed(context, "/checkout");
               },
             ),
           ),

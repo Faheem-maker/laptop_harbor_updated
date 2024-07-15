@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get_it/get_it.dart';
@@ -10,6 +11,8 @@ import 'package:laptop_harbor/Utils/app_colors.dart';
 import 'package:laptop_harbor/Utils/font_styles.dart';
 import 'package:laptop_harbor/dummy/dummy_data.dart';
 import 'package:laptop_harbor/models/product.dart';
+import 'package:laptop_harbor/models/review.dart';
+import 'package:laptop_harbor/services/reviews.dart';
 import 'package:laptop_harbor/stores/cart.dart';
 import 'package:persistent_shopping_cart/persistent_shopping_cart.dart';
 
@@ -17,7 +20,7 @@ import 'package:persistent_shopping_cart/persistent_shopping_cart.dart';
 class ProductScreen extends StatelessWidget {
   static const String routeName = 'product';
   ProductScreen({Key? key}) : super(key: key);
-   Product? product = null;
+  Product? product = null;
   @override
   Widget build(BuildContext context) {
     if (ModalRoute.of(context)!.settings.arguments != null) {
@@ -138,10 +141,6 @@ class ProductScreen extends StatelessWidget {
                   size: 14.0,
                 );
               }),
-          Text(
-            ' 8 reviews',
-            style: FontStyles.montserratRegular12(),
-          ),
         ],
       ),
     );
@@ -288,77 +287,91 @@ class ProductScreen extends StatelessWidget {
   }
 
   Widget _buildReviews(BuildContext context) {
+    var reviews = GetIt.instance<ReviewService>();
+    var cart = GetIt.instance<Cart>();
+    var nameController = TextEditingController();
+    var reviewController = TextEditingController();
     return Container(
       decoration: BoxDecoration(
           color: AppColors.white, borderRadius: BorderRadius.circular(10.0.r)),
       padding: const EdgeInsets.all(20.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Reviews',
-                style: FontStyles.montserratBold19()
-                    .copyWith(color: const Color(0xFF34283E)),
-              ),
-              GestureDetector(
-                onTap: () {
-                  // Navigator.pushNamed(context, Catalogue.routeName);
-                },
-                child: Text(
-                  'See All',
-                  style: FontStyles.montserratBold12()
-                      .copyWith(color: const Color(0xFF9B9B9B)),
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Reviews',
+                  style: FontStyles.montserratBold19()
+                      .copyWith(color: const Color(0xFF34283E)),
                 ),
-              ),
-            ],
-          ),
-          SizedBox(height: 10.0.h),
-          Text(
-            'Olha Chabanova',
-            style: FontStyles.montserratSemiBold14(),
-          ),
-          SizedBox(height: 10.0.h),
-          _buildReviewRatings(context),
-          SizedBox(height: 10.0.h),
-          Text(
-            'I’m old (rolling through my 50’s). But, this is my daughter in law’s favorite color right now.❤️ So I wear it whenever we hang out! She’s my fashion consultant who keeps me on trend🤣',
-            style: FontStyles.montserratRegular14(),
-          ),
-          SizedBox(height: 10.0.h),
-          Text(
-            '835 people found this helpful',
-            style: FontStyles.montserratRegular11(),
-          ),
-          SizedBox(height: 10.0.h),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Comment',
-                style: FontStyles.montserratRegular14()
-                    .copyWith(decoration: TextDecoration.underline),
-              ),
-              Row(
-                children: [
-                  Text(
-                    'Helpful',
-                    style: FontStyles.montserratRegular12(),
-                  ),
-                  SizedBox(width: 10.0.w),
-                  const Icon(Icons.thumb_up)
-                ],
-              )
-            ],
-          ),
-        ],
+              ],
+            ),
+            StreamBuilder(
+                stream: reviews.getReviews(product!.id),
+                builder: (context, AsyncSnapshot<QuerySnapshot> stream) {
+                  if (stream.hasData && stream.data!.docs.isEmpty) {
+                    return const Center(
+                      child: Text("No Reviews")
+                    );
+                  }
+                  else if (stream.hasData) {
+                    print("Reviews: ${stream.data!.docs.length}");
+                    return SizedBox(
+                      height: 300,
+                      child: ListView.builder(
+                          itemCount: stream.data!.docs.length,
+                          itemBuilder: (ctx, idx) {
+                            return Column(children: [
+                              SizedBox(height: 10.0.h),
+                              Text(
+                                stream.data!.docs[idx].get("name"),
+                                style: FontStyles.montserratSemiBold14(),
+                              ),
+                              SizedBox(height: 10.0.h),
+                              _buildReviewRatings(context, stream.data!.docs[idx].get("rating")),
+                              SizedBox(height: 10.0.h),
+                              Text(
+                                stream.data!.docs[idx].get("review"),
+                                style: FontStyles.montserratRegular14(),
+                              ),
+                            ]);
+                          }),
+                    );
+                  }
+                  else {
+                    return const Center(
+                    child: CircularProgressIndicator(), // Or display an error message
+                  );
+                  }
+                }
+            ),
+            SizedBox(height: 10,),
+            Text("Add Review"),
+            Text("Name"),
+            TextFormField(controller: nameController,),
+            Text("Review"),
+            TextFormField(controller: reviewController),
+            Text("Rating"),
+            AppButton.button(
+              text: 'Review',
+              color: AppColors.secondary,
+              height: 45.0.h,
+              width: 150.0.w,
+              onTap: () {
+                reviews.addReview({'product_id': product!.id, 'rating': 5, 'review': reviewController.value.text, 'name': nameController.value.text});
+              },
+            ),
+            _buildReviewRatings(context, 5),
+          ],
+        ),
       ),
     );
   }
 
-  Widget _buildReviewRatings(BuildContext context) {
+  Widget _buildReviewRatings(BuildContext context, int rating) {
     return SizedBox(
       height: 20.0.h,
       child: Row(
@@ -369,9 +382,9 @@ class ProductScreen extends StatelessWidget {
               shrinkWrap: true,
               scrollDirection: Axis.horizontal,
               itemBuilder: (context, index) {
-                return const Icon(
+                return Icon(
                   Icons.star,
-                  color: AppColors.secondary,
+                  color: rating > index ? AppColors.secondary : AppColors.lightGray,
                   size: 14.0,
                 );
               }),
@@ -492,8 +505,9 @@ class ProductScreen extends StatelessWidget {
                     context: context,
                     onTap: () async {
                       GetIt.instance<Cart>().products.add(product!);
+                      Navigator.pop(context);
                       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                          content: Text("Successfully added to cart"),
+                        content: Text("Successfully added to cart"),
                       ));
                     }),
               ],

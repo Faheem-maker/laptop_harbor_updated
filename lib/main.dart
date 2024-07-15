@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:laptop_harbor/Screens/Product/product.dart';
 import 'package:laptop_harbor/layouts/layout.dart';
 import 'package:laptop_harbor/screens/Cart/cart.dart';
+import 'package:laptop_harbor/screens/CheckOut/check_out.dart';
 import 'package:laptop_harbor/screens/all_products.dart';
 import 'package:laptop_harbor/screens/dashboard.dart';
 import 'package:laptop_harbor/screens/home.dart';
@@ -41,6 +42,7 @@ class MainApp extends StatelessWidget {
           '/product': (builder) => DashboardLayout(ProductScreen()),
           '/products': (builder) => DashboardLayout(AllProductsScreen()),
           '/cart': (builder) => DashboardLayout(CartScreen()),
+          '/checkout': (builder) => DashboardLayout(CheckOutScreen()),
         },
       ),
     );

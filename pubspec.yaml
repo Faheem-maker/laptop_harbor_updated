@@ -18,6 +18,7 @@ dependencies:
   persistent_shopping_cart: ^0.0.7
   get_it: ^7.2.0
   injectable: ^1.5.0
+  cloud_firestore: ^5.1.0
 
 dev_dependencies:
   flutter_test:
@@ -28,6 +29,14 @@ dev_dependencies:
   # add build runner if not already added
   build_runner:
 
+assets:
+  - assets/
+  - assets/checkOut/v1.png
+  - assets/checkOut/v2.png
+  - assets/checkOut/v3.png
+  - assets/checkOut/icon1.png
+  - assets/checkOut/icon2.png
+  - assets/checkOut/icon3.png
 
 flutter:
   uses-material-design: true
